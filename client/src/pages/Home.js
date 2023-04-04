@@ -10,6 +10,20 @@ import { API } from '../constants'
 const Home = () => {
     const [state, setState] = React.useState('author')
 
+    useEffect(() => {
+      console.log(localStorage.getItem('token'))
+      axios.get(`${API}/user/roles`, {
+        headers: {
+          token: localStorage.getItem('token')
+        }
+      }).then((res) => {
+        console.log(res.data)
+        setState(res.data[0])
+      }).catch((err) => {
+        console.log(err)
+      })
+    }, [])
+
     const [proposals, setProposals] = useState([])
 
     const [user, setUser] = useState({})

@@ -1,5 +1,5 @@
 import User from '../models/User.js'
-import { registerValidation } from '../middlewares/validator.js'
+import { creationValidation } from '../middlewares/validator.js'
 import bcrypt from 'bcrypt'
 
 export const allUsers = async (req, res) => {
@@ -28,7 +28,7 @@ export const userRoles = async (req, res) => {
 
 export const createUser = async (req, res) => {
     // Validation
-    const { error } = registerValidation(req.body)
+    const { error } = creationValidation(req.body)
     if (error) return res.json({error: error.details[0].message})
 
     // Hash the password
@@ -45,11 +45,11 @@ export const createUser = async (req, res) => {
         })
 
         const user = await newUser.save()
-        res.status(200).json(user)
+        return res.status(200).json(user)
     } catch (err) {
         // Check For Duplictaes
         if (err.keyPattern.email) res.json({error: "Email Already Exist"})
-        res.json({error: error})
+        return res.json({error: error})
     }
 }
 
@@ -80,6 +80,23 @@ export const updateUser = async (req, res) => {
     } catch (err) {
         // Check For Duplictaes
         if (err.keyPattern.email) res.json({error: "Email Already Exist"})
-        res.json({error: error})
+        res.json({error: err})
+    }
+}
+
+export const updateUserRoles = async (req, res) => {
+    const { id } = req.query
+    console.log(id)
+    
+    try {
+        await User.findByIdAndUpdate(id, {
+            roles: req.body.roles
+        })
+
+        return res.status(200).json("updated successfully")
+    } catch (err) {
+        // Check For Duplictaes
+        if (err.keyPattern.email) res.json({error: "Email Already Exist"})
+        res.json({error: err})
     }
 }
