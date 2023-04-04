@@ -5,7 +5,7 @@ export const newProposal = async (req, res) => {
         const newProposal = new Proposal({
             title: req.body.title,
             description: req.body.description,
-            author: req.body.author,
+            author: req.user.email,
             fileUrl: req.body.fileUrl
         })
 
@@ -25,14 +25,30 @@ export const allProposals = async (req, res) => {
     }
 }
 
+export const getProposals = async (req, res) => {
+
+    try {
+        const proposals = await Proposal.find({author: req.user.email})
+        return res.status(200).json(proposals)
+    } catch (err) {
+        return res.json({error: err})
+    }
+}
+
 export const updateProposal = async (req, res) => {
+    const { id } = req.query
+    console.log(id)
+
     try {
         await Proposal.findByIdAndUpdate(id, {
             title: req.body.title,
             description: req.body.description,
             author: req.body.author,
-            fileUrl: req.body.fileUrl
+            fileUrl: req.body.fileUrl,
+            status: req.body.status
         })
+
+        return res.status(200).json("update successfull")
     } catch (err) {
         return res.json({error: err})
     }

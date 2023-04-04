@@ -20,6 +20,8 @@ const LoginPage = () => {
 
             if(res.data.error){
                 toast(res.data.error)
+            } else if (res.error) {
+                toast(res.error.message)
             } else{ 
                 localStorage.setItem('token', res.data)
                 toast("Successfully Logged in!")
@@ -27,7 +29,7 @@ const LoginPage = () => {
             }
         }).catch((err) => {
             console.log(err)
-            toast(err)
+            toast(err.message)
         })
     }
 

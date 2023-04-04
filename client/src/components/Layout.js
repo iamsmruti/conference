@@ -59,6 +59,7 @@ const Layout = ({children, state, setState, setSubStateReviewer, setSubStateAuth
           token: localStorage.getItem('token')
         }
       }).then((res) => {
+        console.log(res.data)
         setRoles(res.data)
       }).catch((err) => {
         console.log(err)
