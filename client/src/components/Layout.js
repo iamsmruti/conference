@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -22,10 +22,11 @@ import { Drawer as ChairmanDrawer } from './ChairmanDrawer';
 import { Drawer as ReviewerDrawer } from './ReviewerDrawer';
 
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios';
+import { API } from '../constants';
 
 
 const drawerWidth = 240;
-const settings = ['Profile', 'Logout'];
 
 const Layout = ({children, state, setState, setSubStateReviewer, setSubStateAuthor, setSubStateChairman, setSubStateAdmin}) => {
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -48,6 +49,21 @@ const Layout = ({children, state, setState, setSubStateReviewer, setSubStateAuth
     };
 
     const navigate = useNavigate()
+
+    const [roles, setRoles] = useState([])
+
+    useEffect(() => {
+      console.log(localStorage.getItem('token'))
+      axios.get(`${API}/user/roles`, {
+        headers: {
+          token: localStorage.getItem('token')
+        }
+      }).then((res) => {
+        setRoles(res.data)
+      }).catch((err) => {
+        console.log(err)
+      })
+    }, [])
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -84,10 +100,9 @@ const Layout = ({children, state, setState, setSubStateReviewer, setSubStateAuth
                   onChange={handleChange}
                   sx={{color: 'white',}}
                 >
-                  <MenuItem value={'author'}>Author</MenuItem>
-                  <MenuItem value={'admin'}>Admin</MenuItem>
-                  <MenuItem value={'reviewer'}>Reviewer</MenuItem>
-                  <MenuItem value={'chairman'}>Chairman</MenuItem>
+                  {roles?.map((role) => (
+                    <MenuItem sx={{textTransform: 'capitalize'}} value={role}>{role}</MenuItem>
+                  ))}
                 </Select>
             </FormControl>
 

@@ -35,15 +35,15 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
     // Validation
     const { error } = loginValidation(req.body)
-    if (error) return res.json(error.details[0].message)
+    if (error) return res.json({error: error.details[0].message})
 
     // If User with entered Email exists
     const user = await User.findOne({ email: req.body.email })
-    if (!user) return res.status(400).json({ message: "Incorrect Email" })
+    if (!user) return res.status(400).json({ error: "Incorrect Email" })
 
     // If exists , the password is checked
     const validPass = await bcrypt.compare(req.body.password, user.password)
-    if (!validPass) return res.status(400).json({ message: "Incorrect Password" })
+    if (!validPass) return res.status(400).json({ error: "Incorrect Password" })
 
     // JWT Token
     const token = jwt.sign({

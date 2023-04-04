@@ -3,7 +3,10 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
+
 import authRoutes from './routes/authRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import proposalRoutes from './routes/proposalRoutes.js'
 
 dotenv.config()
 const app = express()
@@ -18,6 +21,8 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 
 app.use('/auth', authRoutes)
+app.use('/user', userRoutes)
+app.use('/proposal', proposalRoutes)
 
 const URL = process.env.DB_URL
 const PORT = process.env.PORT || 4500
